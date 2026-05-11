@@ -18,7 +18,9 @@ npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent 
 
 ## Available skills
 
-None yet. This repository is being bootstrapped.
+| Skill | Description |
+| --- | --- |
+| [`video-analysis`](./skills/video-analysis) | Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes. |
 
 ## Contributing
 
