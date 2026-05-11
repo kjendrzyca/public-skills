@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "public-skills",
+  "description": "Reusable Agent Skills compatible with the Agent Skills spec.",
+  "owner": {
+    "name": "Krzysztof Jendrzyca"
+  },
+  "plugins": [
+    {
+      "name": "video-analysis",
+      "description": "Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes.",
+      "source": "./",
+      "skills": ["./skills/video-analysis"]
+    }
+  ]
+}
