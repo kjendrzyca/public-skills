@@ -1,7 +1,7 @@
 ---
 name: video-analysis
 description: Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, checkpoint frames, and timestamped issue notes. Use when reviewing screen recordings, product demo videos, QA recordings, onboarding videos, bug reports with video evidence, or when asked to transcribe audio, inspect media metadata, extract frames, or create a timestamped analysis script from a video.
-compatibility: Requires ffmpeg and ffprobe on PATH. Optional: ImageMagick for contact sheets, plus one of parakeet-mlx, whisper, or whisper-cli for transcription.
+compatibility: "Requires ffmpeg and ffprobe on PATH. Optional: ImageMagick for contact sheets, plus one of parakeet-mlx, whisper, or whisper-cli for transcription."
 ---
 
 # Video Analysis
