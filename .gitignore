@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and temp
+*.log
+tmp/
+temp/
+
+# Tool caches
+__pycache__/
+*.pyc
+.ruff_cache/
+node_modules/
