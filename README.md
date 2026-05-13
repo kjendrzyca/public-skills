@@ -20,6 +20,7 @@ npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent 
 
 | Skill | Description |
 | --- | --- |
+| [`diff-explainer`](./skills/diff-explainer) | Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links. |
 | [`video-analysis`](./skills/video-analysis) | Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes. |
 
 ## Contributing
