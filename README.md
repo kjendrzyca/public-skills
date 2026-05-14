@@ -16,12 +16,17 @@ Target a specific agent:
 npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent opencode
 ```
 
-## Available skills
+## Available Skills
 
-| Skill | Description |
-| --- | --- |
-| [`diff-explainer`](./skills/diff-explainer) | Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links. |
-| [`video-analysis`](./skills/video-analysis) | Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes. |
+### [`diff-explainer`](./skills/diff-explainer)
+
+Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links.
+
+Demo: [watch a short diff-explainer demo](./assets/diff-explainer-demo.mp4).
+
+### [`video-analysis`](./skills/video-analysis)
+
+Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes.
 
 ## Contributing
 
