@@ -24,6 +24,12 @@ Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with
 
 Demo: [watch a short diff-explainer demo](./assets/diff-explainer-demo.mp4).
 
+### [`explain-software-problem`](./skills/explain-software-problem)
+
+Explain software and code-related problems in simple terms, including bugs, feature requests, refactors, errors, PR intent, or the problem an existing piece of code solves.
+
+This skill is intentionally super simple: it is a tiny prompt for quickly restating the problem in plain language, not a full review or analysis workflow.
+
 ### [`video-analysis`](./skills/video-analysis)
 
 Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes.
