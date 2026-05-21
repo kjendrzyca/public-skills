@@ -18,17 +18,23 @@ npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent 
 
 ## Available Skills
 
-### [`diff-explainer`](./skills/diff-explainer)
+### [`coding-explain-diff`](./skills/coding-explain-diff)
 
 Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links.
 
-Demo: [watch a short diff-explainer demo](./assets/diff-explainer-demo.mp4).
+Demo: [watch a short coding-explain-diff demo](./assets/coding-explain-diff-demo.mp4).
 
-### [`explain-software-problem`](./skills/explain-software-problem)
+### [`coding-explain-problem`](./skills/coding-explain-problem)
 
 Explain software and code-related problems in simple terms, including bugs, feature requests, refactors, errors, PR intent, or the problem an existing piece of code solves.
 
 This skill is intentionally super simple: it is a tiny prompt for quickly restating the problem in plain language, not a full review or analysis workflow.
+
+### [`coding-audit-assumptions`](./skills/coding-audit-assumptions)
+
+Reframe software problems, execution plans, architecture changes, bug fixes, and reliability issues by identifying the assumptions that make the failure mode possible, then proposing a design that removes, redesigns, or makes those assumptions irrelevant.
+
+This skill is intentionally tiny: it is a prompt for breaking out of default solution paths before implementation starts.
 
 ### [`video-analysis`](./skills/video-analysis)
 

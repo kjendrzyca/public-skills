@@ -1,11 +1,11 @@
 ---
-name: diff-explainer
+name: coding-explain-diff
 description: Explain a GitHub pull request from a PR URL by creating an isolated checkout when needed, organizing changed files into logical groups, and writing a structured Markdown report with per-group explanations, important snippets, and GitHub PR diff links. Use when asked to explain a PR, summarize what changed in a PR, or group a diff into reviewable sections.
 license: MIT
 compatibility: Requires git, network access to GitHub, and GitHub CLI (`gh`) authenticated for PR metadata, cloning, and diffs.
 ---
 
-# Diff Explainer
+# Coding Explain Diff
 
 Create a Markdown explanation of a GitHub pull request from a PR URL. The output should help a human reviewer understand the diff quickly: group related changes by intent, explain each group with evidence from the diff, include important snippets for significant changes, and link back to the PR Files view.
 
@@ -16,7 +16,7 @@ Create a Markdown explanation of a GitHub pull request from a PR URL. The output
 - Use an existing local checkout only when it already points at the PR head. Otherwise create an isolated scratch checkout in a temp directory and analyze the PR there.
 - Keep the user's working tree read-only by default. Do not checkout branches, fetch refs, edit source files, post GitHub comments, push, or change the user's git state unless the user explicitly approves that action.
 - It is OK to clone and checkout the PR inside the scratch checkout because it is disposable agent workspace.
-- Write one Markdown artifact under the analysis checkout's `.agent-data/diff-explainer/` using a collision-resistant compact timestamp filename.
+- Write one Markdown artifact under the analysis checkout's `.agent-data/coding-explain-diff/` using a collision-resistant compact timestamp filename.
 - Prefer GitHub PR diff links for human-facing file references. Keep local repo-relative paths as fallback/context.
 - Leave scratch checkouts in place after the run so report references remain inspectable. The user or OS can clean temp directories later.
 - Do not post the report to GitHub in v1.
@@ -33,7 +33,7 @@ Create a Markdown explanation of a GitHub pull request from a PR URL. The output
    - If the current directory is a matching repository but not at the PR head, do not mutate it. Create a scratch checkout instead.
    - If the current directory is unrelated or not a git checkout, create a scratch checkout.
 5. Create a scratch checkout when needed.
-   - Use a temp root such as `${TMPDIR:-/tmp}/diff-explainer/`.
+   - Use a temp root such as `${TMPDIR:-/tmp}/coding-explain-diff/`.
    - Use a collision-resistant directory name such as `owner-repo-pr-123-YYYYMMDDTHHMMSS`.
    - Clone with `gh repo clone OWNER/REPO <checkout-dir>`.
    - In the scratch checkout, run `gh pr checkout 123`.
@@ -58,13 +58,13 @@ Create a Markdown explanation of a GitHub pull request from a PR URL. The output
 Create the directory inside the analysis checkout if needed:
 
 ```bash
-mkdir -p .agent-data/diff-explainer
+mkdir -p .agent-data/coding-explain-diff
 ```
 
 Use this filename shape:
 
 ```text
-.agent-data/diff-explainer/YYYY-MM-DDTHHMMSS-pr-123.md
+.agent-data/coding-explain-diff/YYYY-MM-DDTHHMMSS-pr-123.md
 ```
 
 Use a compact ISO-like timestamp without colons so filenames are portable, for example `2026-05-13T143022-pr-123.md`. When analyzing from a scratch checkout, this path is relative to that scratch checkout.
