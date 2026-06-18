@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ask Claude"
+  short_description: "Delegate focused work to Claude Code"
+  default_prompt: "Use $ask-claude to ask Claude for an independent review of this execution plan."

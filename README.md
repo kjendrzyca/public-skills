@@ -18,6 +18,12 @@ npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent 
 
 ## Available Skills
 
+### [`ask-claude`](./skills/ask-claude)
+
+Delegate focused analysis, execution-plan review, code review, or second-opinion work to Claude Code through non-interactive `claude -p`.
+
+This skill is intentionally small: it standardizes the prompt shape and safe default command so another agent can consult Claude without opening an interactive session.
+
 ### [`handoff`](./skills/handoff)
 
 Compact the current conversation into a redacted handoff document for another agent to continue from.
