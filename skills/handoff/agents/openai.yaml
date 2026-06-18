@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Write redacted agent handoffs"
+  default_prompt: "Use $handoff to write a redacted handoff document for the next agent focused on continuing this work."

@@ -18,6 +18,12 @@ npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent 
 
 ## Available Skills
 
+### [`handoff`](./skills/handoff)
+
+Compact the current conversation into a redacted handoff document for another agent to continue from.
+
+The handoff is saved to the operating system's temporary directory, not the current workspace, and points to existing artifacts instead of duplicating them.
+
 ### [`coding-explain-diff`](./skills/coding-explain-diff)
 
 Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links.
