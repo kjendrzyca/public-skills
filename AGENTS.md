@@ -32,4 +32,5 @@ Audit every new or modified skill for leaks before commit. If unsure, do not com
 - relative paths within a skill, never absolute
 - English for skill content unless the skill is explicitly about a non-English context
 - prefer minimal changes when updating an existing skill
+- do not create or regenerate `agents/` UI metadata folders, including `agents/openai.yaml`, unless explicitly requested by the maintainer
 - new coding-focused skills should use `coding-<verb>-<object>` names; keep already-published names stable unless doing an explicit compatibility migration
