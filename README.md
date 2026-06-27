@@ -24,6 +24,12 @@ Delegate focused analysis, execution-plan review, code review, or second-opinion
 
 This skill is intentionally small: it standardizes the prompt shape and safe default command so another agent can consult Claude without opening an interactive session.
 
+### [`battery-stats`](./skills/battery-stats)
+
+Check macOS laptop battery telemetry, current power drain, health, cycle count, and recent real-world battery runtime from local `pmset`, `ioreg`, and `system_profiler` data.
+
+The bundled script produces a concise human report by default and JSON when another agent needs structured battery statistics.
+
 ### [`handoff`](./skills/handoff)
 
 Compact the current conversation into a redacted handoff document for another agent to continue from.
