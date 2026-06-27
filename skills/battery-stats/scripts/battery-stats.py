@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
+import math
+import os
 import re
 import statistics
 import subprocess
@@ -18,6 +21,16 @@ LINE_RE = re.compile(
     r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [+-]\d{4})\s+(.+?)\s{2,}(.*)$"
 )
 SOURCE_RE = re.compile(r"Using\s+(BATT|Batt|AC)\s*\(?Charge:\s*(\d+)%?\)?", re.I)
+SYSLOG_LINE_RE = re.compile(
+    r"^([A-Z][a-z]{2})\s+(\d+)\s+(\d\d:\d\d:\d\d)\s+\S+\s+powerd\[\d+\]\s+<[^>]+>:\s+(.*)$"
+)
+MONTHS = {
+    name: index
+    for index, name in enumerate(
+        ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        1,
+    )
+}
 
 
 def run_command(args: list[str], timeout: int = 30) -> tuple[int, str, str]:
@@ -59,6 +72,20 @@ def format_duration(seconds: float | None) -> str | None:
     if hours:
         return f"{hours}h {minutes:02d}m"
     return f"{minutes}m"
+
+
+def percentile(values: list[float], percent: float) -> float | None:
+    if not values:
+        return None
+    sorted_values = sorted(values)
+    index = (len(sorted_values) - 1) * percent / 100
+    floor_index = math.floor(index)
+    ceil_index = math.ceil(index)
+    if floor_index == ceil_index:
+        return sorted_values[int(index)]
+    lower = sorted_values[floor_index] * (ceil_index - index)
+    upper = sorted_values[ceil_index] * (index - floor_index)
+    return lower + upper
 
 
 def parse_pmset_batt(text: str) -> dict[str, Any]:
@@ -117,6 +144,10 @@ def parse_ioreg_battery(text: str) -> dict[str, Any]:
     if nominal_capacity_mah and design_capacity_mah:
         health_percent = nominal_capacity_mah / design_capacity_mah * 100
 
+    usable_energy_wh_estimate = None
+    if nominal_capacity_mah and voltage_mv:
+        usable_energy_wh_estimate = nominal_capacity_mah * voltage_mv / 1_000_000
+
     temperature_c = None
     if temperature_raw:
         temperature_c = temperature_raw / 10 - 273.15
@@ -132,6 +163,7 @@ def parse_ioreg_battery(text: str) -> dict[str, Any]:
         "raw_charge_percent": raw_charge_percent,
         "nominal_capacity_mah": nominal_capacity_mah,
         "design_capacity_mah": design_capacity_mah,
+        "usable_energy_wh_estimate": usable_energy_wh_estimate,
         "health_percent": health_percent,
         "cycle_count": cycle_count,
         "avg_time_to_empty_min": avg_time_to_empty_min if avg_time_to_empty_min != 65535 else None,
@@ -171,6 +203,16 @@ class Session:
         return self.duration_s / self.drop_pct * 100
 
     def as_json(self) -> dict[str, Any]:
+        return self.as_json_with_energy(None)
+
+    def as_json_with_energy(self, usable_energy_wh: float | None) -> dict[str, Any]:
+        energy_wh = None
+        avg_power_w = None
+        if usable_energy_wh is not None and self.drop_pct > 0:
+            energy_wh = usable_energy_wh * self.drop_pct / 100
+            duration_h = self.duration_s / 3600
+            if duration_h > 0:
+                avg_power_w = energy_wh / duration_h
         return {
             "start": self.start.isoformat(),
             "start_charge": self.start_charge,
@@ -179,25 +221,36 @@ class Session:
             "duration_s": self.duration_s,
             "duration": format_duration(self.duration_s),
             "drop_pct": self.drop_pct,
+            "energy_wh_estimate": energy_wh,
+            "avg_power_w_estimate": avg_power_w,
             "projected_full_runtime_s": self.projected_full_runtime_s,
             "projected_full_runtime": format_duration(self.projected_full_runtime_s),
             "end_reason": self.end_reason,
         }
 
 
-def summarize_sessions(sessions: list[Session]) -> dict[str, Any]:
+def summarize_sessions(sessions: list[Session], usable_energy_wh: float | None = None) -> dict[str, Any]:
     if not sessions:
         return {
             "session_count": 0,
             "observed_duration_s": 0,
             "observed_duration": "0m",
             "observed_drop_pct": 0,
+            "estimated_energy_wh": None,
             "weighted_full_runtime_s": None,
             "weighted_full_runtime": None,
             "median_projected_full_runtime_s": None,
             "median_projected_full_runtime": None,
             "min_projected_full_runtime": None,
             "max_projected_full_runtime": None,
+            "weighted_avg_power_w": None,
+            "mean_session_power_w": None,
+            "median_session_power_w": None,
+            "min_session_power_w": None,
+            "max_session_power_w": None,
+            "p25_session_power_w": None,
+            "p75_session_power_w": None,
+            "p90_session_power_w": None,
         }
 
     total_duration = sum(session.duration_s for session in sessions)
@@ -208,25 +261,52 @@ def summarize_sessions(sessions: list[Session]) -> dict[str, Any]:
         for session in sessions
         if session.projected_full_runtime_s is not None
     ]
+    estimated_energy_wh = usable_energy_wh * total_drop / 100 if usable_energy_wh is not None else None
+    total_duration_h = total_duration / 3600
+    session_powers: list[float] = []
+    if usable_energy_wh is not None:
+        for session in sessions:
+            duration_h = session.duration_s / 3600
+            if duration_h > 0 and session.drop_pct > 0:
+                session_powers.append((usable_energy_wh * session.drop_pct / 100) / duration_h)
 
     return {
         "session_count": len(sessions),
         "observed_duration_s": total_duration,
         "observed_duration": format_duration(total_duration),
         "observed_drop_pct": total_drop,
+        "estimated_energy_wh": estimated_energy_wh,
         "weighted_full_runtime_s": weighted,
         "weighted_full_runtime": format_duration(weighted),
         "median_projected_full_runtime_s": statistics.median(projections) if projections else None,
         "median_projected_full_runtime": format_duration(statistics.median(projections)) if projections else None,
         "min_projected_full_runtime": format_duration(min(projections)) if projections else None,
         "max_projected_full_runtime": format_duration(max(projections)) if projections else None,
+        "weighted_avg_power_w": estimated_energy_wh / total_duration_h
+        if estimated_energy_wh is not None and total_duration_h > 0
+        else None,
+        "mean_session_power_w": statistics.mean(session_powers) if session_powers else None,
+        "median_session_power_w": statistics.median(session_powers) if session_powers else None,
+        "min_session_power_w": min(session_powers) if session_powers else None,
+        "max_session_power_w": max(session_powers) if session_powers else None,
+        "p25_session_power_w": percentile(session_powers, 25),
+        "p75_session_power_w": percentile(session_powers, 75),
+        "p90_session_power_w": percentile(session_powers, 90),
     }
 
 
-def parse_pmset_log(
-    text: str,
+@dataclass
+class PowerEvent:
+    timestamp: datetime
+    domain: str
+    text: str
+
+
+def parse_power_events(
+    events: list[PowerEvent],
     current_charge_percent: int | None,
     current_source: str | None,
+    usable_energy_wh: float | None,
 ) -> dict[str, Any]:
     first_ts: datetime | None = None
     last_ts: datetime | None = None
@@ -269,18 +349,12 @@ def parse_pmset_log(
         )
         active = None
 
-    for line in text.splitlines():
-        match = LINE_RE.match(line)
-        if not match:
-            continue
-        ts_text, domain, _message = match.groups()
-        try:
-            timestamp = datetime.strptime(ts_text, "%Y-%m-%d %H:%M:%S %z")
-        except ValueError:
-            continue
+    for event in events:
+        timestamp = event.timestamp
         first_ts = first_ts or timestamp
         last_ts = timestamp
-        domain = domain.strip()
+        domain = event.domain.strip()
+        line = event.text
 
         source_match = SOURCE_RE.search(line)
         source = None
@@ -319,7 +393,7 @@ def parse_pmset_log(
                 start_session(timestamp, charge)
 
     if active is not None and last_ts and current_source == "Battery Power" and current_charge_percent is not None:
-        now = datetime.now(last_ts.tzinfo)
+        now = datetime.now(last_ts.tzinfo) if last_ts.tzinfo else datetime.now()
         end_session(now, current_charge_percent, "current")
 
     usable_screen = [
@@ -389,11 +463,105 @@ def parse_pmset_log(
             "start": first_ts.isoformat() if first_ts else None,
             "end": last_ts.isoformat() if last_ts else None,
         },
-        "screen_on_usable": summarize_sessions(usable_screen),
-        "screen_on_robust": summarize_sessions(robust_screen),
-        "wall_clock_usable": summarize_sessions(usable_wall),
-        "recent_screen_sessions": [session.as_json() for session in usable_screen[-8:]],
+        "screen_on_usable": summarize_sessions(usable_screen, usable_energy_wh),
+        "screen_on_robust": summarize_sessions(robust_screen, usable_energy_wh),
+        "wall_clock_usable": summarize_sessions(usable_wall, usable_energy_wh),
+        "recent_screen_sessions": [
+            session.as_json_with_energy(usable_energy_wh) for session in usable_screen[-8:]
+        ],
     }
+
+
+def pmset_events_from_log(text: str) -> list[PowerEvent]:
+    events: list[PowerEvent] = []
+    for line in text.splitlines():
+        match = LINE_RE.match(line)
+        if not match:
+            continue
+        ts_text, domain, _message = match.groups()
+        try:
+            timestamp = datetime.strptime(ts_text, "%Y-%m-%d %H:%M:%S %z")
+        except ValueError:
+            continue
+        events.append(PowerEvent(timestamp=timestamp, domain=domain.strip(), text=line))
+    return events
+
+
+def parse_pmset_log(
+    text: str,
+    current_charge_percent: int | None,
+    current_source: str | None,
+    usable_energy_wh: float | None,
+) -> dict[str, Any]:
+    return parse_power_events(
+        pmset_events_from_log(text),
+        current_charge_percent,
+        current_source,
+        usable_energy_wh,
+    )
+
+
+def domain_from_asl_message(message: str) -> str:
+    if message.startswith("Summary-"):
+        return "Assertions"
+    if message.startswith("Wake"):
+        return "Wake"
+    if message.startswith("Entering Sleep state"):
+        return "Sleep"
+    if "Display is turned" in message:
+        return "Notification"
+    return "Other"
+
+
+def asl_events_from_powermanagement_logs() -> tuple[list[PowerEvent], list[str]]:
+    events: list[PowerEvent] = []
+    errors: list[str] = []
+    paths = sorted(glob.glob("/var/log/powermanagement/*.asl"))
+    for path in paths:
+        basename = os.path.basename(path)
+        year_match = re.match(r"(\d{4})\.\d{2}\.\d{2}\.asl$", basename)
+        if not year_match:
+            continue
+        year = int(year_match.group(1))
+        code, output, err = run_command(["syslog", "-f", path], timeout=20)
+        if code != 0:
+            errors.append(f"syslog -f {basename} failed: {err.strip() or code}")
+            continue
+        for line in output.splitlines():
+            match = SYSLOG_LINE_RE.match(line)
+            if not match:
+                continue
+            month_name, day, clock, message = match.groups()
+            if month_name not in MONTHS:
+                continue
+            try:
+                hour, minute, second = [int(part) for part in clock.split(":")]
+                timestamp = datetime(
+                    year,
+                    MONTHS[month_name],
+                    int(day),
+                    hour,
+                    minute,
+                    second,
+                )
+            except ValueError:
+                continue
+            if not (
+                "Summary-" in message
+                or "Display is turned" in message
+                or message.startswith("Wake")
+                or message.startswith("Entering Sleep state")
+            ):
+                continue
+            events.append(
+                PowerEvent(
+                    timestamp=timestamp,
+                    domain=domain_from_asl_message(message),
+                    text=message,
+                )
+            )
+    events.sort(key=lambda event: event.timestamp)
+    return events, errors
 
 
 def collect_report() -> dict[str, Any]:
@@ -408,6 +576,7 @@ def collect_report() -> dict[str, Any]:
     if code != 0:
         report["errors"].append(f"ioreg AppleSmartBattery failed: {err.strip() or code}")
     report["smart_battery"] = parse_ioreg_battery(ioreg_text) if ioreg_text else {}
+    usable_energy_wh = report["smart_battery"].get("usable_energy_wh_estimate")
 
     code, power_text, err = run_command(["system_profiler", "SPPowerDataType"], timeout=45)
     if code != 0:
@@ -423,7 +592,21 @@ def collect_report() -> dict[str, Any]:
             log_text,
             report["pmset_batt"].get("charge_percent"),
             report["pmset_batt"].get("power_source"),
+            usable_energy_wh,
         )
+
+    long_term_events, long_term_errors = asl_events_from_powermanagement_logs()
+    if long_term_errors:
+        report["errors"].extend(long_term_errors)
+    if long_term_events:
+        report["long_term_runtime"] = parse_power_events(
+            long_term_events,
+            report["pmset_batt"].get("charge_percent"),
+            report["pmset_batt"].get("power_source"),
+            usable_energy_wh,
+        )
+    else:
+        report["long_term_runtime"] = {}
 
     return report
 
@@ -434,14 +617,32 @@ def rounded(value: float | None, digits: int = 1) -> str:
     return f"{value:.{digits}f}"
 
 
+def print_power_usage(summary: dict[str, Any]) -> None:
+    print(f"  Average screen-on draw: {rounded(summary.get('weighted_avg_power_w'))} W")
+    print(f"  Median session draw: {rounded(summary.get('median_session_power_w'))} W")
+    print(
+        "  Typical range (25-75%): "
+        f"{rounded(summary.get('p25_session_power_w'))}-{rounded(summary.get('p75_session_power_w'))} W"
+    )
+    print(f"  Heavier sessions (90%): {rounded(summary.get('p90_session_power_w'))} W")
+    print(
+        "  Session draw range: "
+        f"{rounded(summary.get('min_session_power_w'))}-{rounded(summary.get('max_session_power_w'))} W"
+    )
+    if summary.get("estimated_energy_wh") is not None:
+        print(f"  Estimated energy used in sample: {rounded(summary.get('estimated_energy_wh'))} Wh")
+
+
 def print_human(report: dict[str, Any]) -> None:
     pmset = report.get("pmset_batt", {})
     smart = report.get("smart_battery", {})
     profiler = report.get("system_profiler", {})
     runtime = report.get("runtime", {})
+    long_term_runtime = report.get("long_term_runtime", {})
     robust = runtime.get("screen_on_robust", {})
     loose = runtime.get("screen_on_usable", {})
     wall = runtime.get("wall_clock_usable", {})
+    long_term_robust = long_term_runtime.get("screen_on_robust", {})
 
     battery_power = smart.get("battery_power_telemetry_w")
     vi_power = smart.get("current_drain_w")
@@ -470,6 +671,8 @@ def print_human(report: dict[str, Any]) -> None:
         f"{smart.get('nominal_capacity_mah', 'n/a')} mAh nominal / "
         f"{smart.get('design_capacity_mah', 'n/a')} mAh design"
     )
+    if smart.get("usable_energy_wh_estimate") is not None:
+        print(f"  Usable energy estimate: {rounded(smart.get('usable_energy_wh_estimate'))} Wh")
     print()
     print("Runtime Estimate")
     span = runtime.get("log_span", {})
@@ -485,6 +688,23 @@ def print_human(report: dict[str, Any]) -> None:
     if loose.get("weighted_full_runtime") != robust.get("weighted_full_runtime"):
         print(f"  Looser 5m/1% screen-on estimate: {loose.get('weighted_full_runtime') or 'n/a'}")
     print(f"  Wall-clock battery runtime including sleep: {wall.get('weighted_full_runtime') or 'n/a'}")
+
+    power_source = long_term_runtime if long_term_robust.get("weighted_avg_power_w") is not None else runtime
+    power_summary = power_source.get("screen_on_robust", {})
+    if power_summary.get("weighted_avg_power_w") is not None:
+        print()
+        print("Power Usage Estimate")
+        power_span = power_source.get("log_span", {})
+        label = "Longer stored history" if power_source is long_term_runtime else "pmset history"
+        print(f"  Source: {label}")
+        print(f"  Span: {power_span.get('start', 'n/a')} -> {power_span.get('end', 'n/a')}")
+        print(
+            "  Screen-on sample: "
+            f"{power_summary.get('session_count', 0)} sessions, "
+            f"{power_summary.get('observed_duration', '0m')} observed, "
+            f"{power_summary.get('observed_drop_pct', 0)}% used"
+        )
+        print_power_usage(power_summary)
 
     recent = runtime.get("recent_screen_sessions", [])
     if recent:

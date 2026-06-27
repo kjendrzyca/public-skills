@@ -26,7 +26,7 @@ This skill is intentionally small: it standardizes the prompt shape and safe def
 
 ### [`battery-stats`](./skills/battery-stats)
 
-Check macOS laptop battery telemetry, current power drain, health, cycle count, and recent real-world battery runtime from local `pmset`, `ioreg`, and `system_profiler` data.
+Check macOS laptop battery telemetry, current power drain, average screen-on watt usage, health, cycle count, and recent real-world battery runtime from local `pmset`, `ioreg`, `system_profiler`, and power-management logs.
 
 The bundled script produces a concise human report by default and JSON when another agent needs structured battery statistics.
 
