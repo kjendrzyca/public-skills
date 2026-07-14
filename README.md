@@ -24,6 +24,12 @@ Delegate focused analysis, execution-plan review, code review, or second-opinion
 
 This skill is intentionally small: it standardizes the prompt shape and safe default command so another agent can consult Claude without opening an interactive session.
 
+### [`coding-consult-design`](./skills/coding-consult-design)
+
+Run a structured, repository-grounded design consultation with Codex CLI or Claude Code for non-trivial software problems, proposed fixes, and execution plans.
+
+The consultant works read-only, receives a concrete evidence packet and numbered decision questions, and defaults to the other model family to reduce correlated blind spots.
+
 ### [`battery-stats`](./skills/battery-stats)
 
 Check macOS laptop battery telemetry, current power drain, average screen-on watt usage, health, cycle count, and recent real-world battery runtime from local `pmset`, `ioreg`, `system_profiler`, and power-management logs.
