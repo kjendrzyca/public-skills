@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { randomUUID, webcrypto } from 'node:crypto'
-import { resolve } from 'node:path'
+import { realpathSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const crypto = webcrypto
@@ -535,7 +535,7 @@ const main = async () => {
 }
 
 const isExecutedDirectly =
-  process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))
 
 if (isExecutedDirectly) {
   main().catch((error) => {
