@@ -20,6 +20,22 @@ Use this template for every report. Adapt wording to the PR, but keep the same s
 
 [One or two short paragraphs explaining what the PR does and the main areas changed. Define the core entities and any project-specific terms before using them to explain the flow. Stay neutral and explanatory. Do not lead with review judgments.]
 
+## System flow: before and after
+
+[Include this section only when the PR changes architecture, data flow, system boundaries, or a workflow that spans several components. Remove it for small, local changes. Use plain labels, and define any necessary project-specific terms in `Overall summary` before they appear here.]
+
+```text
+Before
+  [current flow on the base branch]
+
+After
+  [flow at the PR head]
+```
+
+- Added: [new components, stored state, or behavior]
+- Changed: [existing flow or responsibility that works differently]
+- Unchanged: [important existing behavior or explicit non-goals]
+
 ## Change groups
 
 ### 1. [Group title]
@@ -120,6 +136,8 @@ Why grouped: [short phrase]
 ## Formatting Rules
 
 - Keep `<details>` blocks closed by default. Do not add the `open` attribute.
+- Include `System flow: before and after` only for PRs that change architecture, data flow, system boundaries, or a multi-component workflow. Omit it for small, local changes.
+- Keep the before/after diagram accurate to the base branch and PR head, scannable in under 60 seconds, and free of terms that were not defined earlier.
 - Use numbered group headings in review order, not alphabetical file order.
 - Keep group titles concrete: name the behavior or code area, not just the filename.
 - Keep `Why grouped` to one short phrase.

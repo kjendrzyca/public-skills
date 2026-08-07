@@ -83,6 +83,14 @@ Use Markdown links to the PR Files view for primary references, with link text s
 - When related terms are easy to confuse, contrast them and give one concrete runtime example.
 - Before saving the report, scan the overall summary and group headings for unexplained terms. Do not rely on a later section to explain an earlier sentence.
 
+### System flow: before and after
+
+- Add this section after `Overall summary` when the PR changes architecture, data flow, system boundaries, or a workflow that spans several components. Omit it for small, local changes.
+- Show the base-branch behavior as `Before` and the PR-head behavior as `After` in one compact plain-text diagram. Describe the code that exists, not a future design.
+- Use plain labels. Define any necessary project-specific terms earlier in `Overall summary` before using them in the diagram.
+- Follow the diagram with short `Added`, `Changed`, and `Unchanged` bullets when they help the reviewer see the scope and important non-goals.
+- Keep the section scannable in under 60 seconds. Do not repeat the detailed explanations from `Change groups`.
+
 For snippets:
 
 - Use `Important snippets` as an evidence walkthrough, not as a single representative code block.
