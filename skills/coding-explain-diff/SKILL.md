@@ -75,6 +75,14 @@ Read `references/report-template.md` before writing the report.
 
 Use Markdown links to the PR Files view for primary references, with link text such as `src/server/router.ts:42`. If a line number is uncertain, link to the file diff header and use link text like `src/server/router.ts`. Keep local paths in the report so the scratch checkout remains useful for follow-up inspection.
 
+### Plain-language first
+
+- Assume the reviewer understands software but does not know the feature's vocabulary.
+- Before first use, define any project-specific term, acronym, or familiar word used with a special meaning that the reviewer needs to understand the main flow. Start with its plain meaning, then give the code term in parentheses when that helps the reviewer map the explanation to the diff.
+- Replace jargon that adds no precision. Keep necessary code or feature terms after defining them.
+- When related terms are easy to confuse, contrast them and give one concrete runtime example.
+- Before saving the report, scan the overall summary and group headings for unexplained terms. Do not rely on a later section to explain an earlier sentence.
+
 For snippets:
 
 - Use `Important snippets` as an evidence walkthrough, not as a single representative code block.

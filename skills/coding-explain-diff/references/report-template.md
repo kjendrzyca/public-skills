@@ -18,7 +18,7 @@ Use this template for every report. Adapt wording to the PR, but keep the same s
 
 ## Overall summary
 
-[One or two short paragraphs explaining what the PR does and the main areas changed. Stay neutral and explanatory. Do not lead with review judgments.]
+[One or two short paragraphs explaining what the PR does and the main areas changed. Define the core entities and any project-specific terms before using them to explain the flow. Stay neutral and explanatory. Do not lead with review judgments.]
 
 ## Change groups
 
