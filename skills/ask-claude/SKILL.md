@@ -1,6 +1,7 @@
 ---
 name: ask-claude
-description: Delegate focused analysis, code review, execution-plan review, or second-opinion work to Claude Code through non-interactive `claude -p`. Use when an agent should consult Claude, ask for an independent review, cross-check code or a plan, or hand off a bounded read-only task without opening an interactive Claude session.
+description: Delegate focused analysis, code review, execution-plan review, or second-opinion work to Claude Code through non-interactive `claude -p`. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically.
+disable-model-invocation: true
 license: MIT
 ---
 

@@ -1,6 +1,8 @@
 # Skill Authoring Rules
 
-All skills in this repository must be compatible with the Agent Skills spec so they work across Claude, Codex, OpenCode, and other compatible clients.
+Skills in this repository should follow the Agent Skills spec so they work across Claude, Codex, OpenCode, and other compatible clients.
+
+Maintainer-approved user-only skills are one explicit exception. They may use `disable-model-invocation: true` in `SKILL.md` for Claude Code and Pi, plus a minimal `agents/openai.yaml` with `policy.allow_implicit_invocation: false` for Codex. Their descriptions must also forbid automatic use as a fallback for clients that ignore these extensions.
 
 Source of truth:
 

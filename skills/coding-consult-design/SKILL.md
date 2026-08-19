@@ -1,6 +1,7 @@
 ---
 name: coding-consult-design
-description: Use this skill for a structured, repository-grounded consultation with Codex CLI or Claude Code on a non-trivial software problem, proposed fix, design decision, implementation plan, or execution plan. Trigger when the user asks to consult Codex or Claude, get a deep second opinion, or stress-test an approach and the consultant should inspect repository evidence, answer multiple decision questions, and have its advice verified before action. Do not use for routine code review or a small single-question delegation. Run the other model family read-only by default.
+description: Run a structured, repository-grounded consultation with Codex CLI or Claude Code on a non-trivial software problem, proposed fix, design decision, implementation plan, or execution plan. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically. Run the other model family read-only by default.
+disable-model-invocation: true
 ---
 
 # Consult Another Coding Agent

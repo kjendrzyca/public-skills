@@ -1,6 +1,7 @@
 ---
 name: battery-stats
-description: Check macOS laptop battery telemetry, current power drain, average watt usage, battery health, cycle count, and recent real-world battery runtime from local pmset/ioreg/system_profiler data. Use when the user asks about current Mac power drain, wattage, average power draw, battery health, "battery report", battery life, average runtime, or how long their Mac battery lasts.
+description: Check macOS laptop battery telemetry, current power drain, average watt usage, battery health, cycle count, and recent real-world battery runtime from local pmset/ioreg/system_profiler data. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically.
+disable-model-invocation: true
 license: MIT
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: coding-explain-diff
-description: Explain a GitHub pull request from a PR URL by creating an isolated checkout when needed, organizing changed files into logical groups, and writing a structured Markdown report with per-group explanations, important snippets, and GitHub PR diff links. Use when asked to explain a PR, summarize what changed in a PR, or group a diff into reviewable sections.
+description: Explain a GitHub pull request from a PR URL by creating an isolated checkout when needed, organizing changed files into logical groups, and writing a structured Markdown report with per-group explanations, important snippets, and GitHub PR diff links. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically.
+disable-model-invocation: true
 license: MIT
 compatibility: Requires git, network access to GitHub, and GitHub CLI (`gh`) authenticated for PR metadata, cloning, and diffs.
 ---

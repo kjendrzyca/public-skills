@@ -16,6 +16,12 @@ Target a specific agent:
 npx skills add github.com/kjendrzyca/public-skills --skill <skill-name> --agent opencode
 ```
 
+## Manual-only skills
+
+Some skills are intentionally manual-only. They use `disable-model-invocation: true` for Claude Code and Pi, `agents/openai.yaml` for Codex, and an explicit-only rule in the description for clients that ignore those extensions. GitHub Copilot CLI and OpenCode may still expose these skills to the model, so their manual-only behavior depends on that description rule there.
+
+This is a deliberate extension of the Agent Skills spec. `gh skill publish --dry-run` accepts it, but strict spec validators may reject the extra frontmatter field.
+
 ## Available Skills
 
 ### [`ask-claude`](./skills/ask-claude)

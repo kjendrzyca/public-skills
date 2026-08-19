@@ -1,6 +1,7 @@
 ---
 name: coding-audit-assumptions
 description: Think out of the box about a software problem or planned solution by questioning the assumptions that make it hard, then propose a different way to solve it - often simpler, with less work and less code. Use ONLY when the user explicitly invokes this skill or asks for it by name. Never trigger it automatically or as an internal step of planning, review, or remediation. Its proposals are options for the user to assess, never decisions to implement.
+disable-model-invocation: true
 license: MIT
 ---
 
