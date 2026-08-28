@@ -1,6 +1,6 @@
 ---
 name: coding-explain-diff
-description: Explain a GitHub pull request from a PR URL by creating an isolated checkout when needed, organizing changed files into logical groups, and writing a structured Markdown report with per-group explanations, important snippets, and GitHub PR diff links. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically.
+description: Explain a GitHub pull request from a PR URL by creating an isolated checkout when needed, organizing changed files into logical groups, and writing a structured Markdown report with a bird's-eye ASCII architecture diagram for cross-component changes, per-group explanations, important snippets, and GitHub PR diff links. Use ONLY when the user explicitly invokes this skill by name. Never trigger it automatically.
 disable-model-invocation: true
 license: MIT
 compatibility: Requires git, network access to GitHub, and GitHub CLI (`gh`) authenticated for PR metadata, cloning, and diffs.
@@ -84,12 +84,24 @@ Use Markdown links to the PR Files view for primary references, with link text s
 - When related terms are easy to confuse, contrast them and give one concrete runtime example.
 - Before saving the report, scan the overall summary and group headings for unexplained terms. Do not rely on a later section to explain an earlier sentence.
 
+### Bird's-eye architecture
+
+- Add `## Bird's-eye architecture` immediately after `Overall summary` whenever the PR-head runtime flow crosses several components or system boundaries, such as an entry point -> service -> repository/provider path or a request -> background task -> external system path. When this condition applies, the diagram is required. Omit it for a small, local change with no useful system flow.
+- Draw one top-down ASCII tree using simple fixed-width characters such as `|`, `+--`, `->`, `<-`, and `v`. Do not use Mermaid or dense box grids.
+- Start at the real caller or entry point. If it lives outside the PR, label that boundary instead of inventing its behavior.
+- Use real route, service, port, task, provider, and store names from the diff. Add plain labels only where they make the flow easier to understand.
+- Show the main handoffs, return values, and decision branches. Do not force every changed file or helper into the diagram.
+- When several related entry points share one flow, branch them under one root. Keep nested decisions next to the component that owns them.
+- Describe the code at the PR head, not a proposed design. Keep the diagram readable before the detailed change groups and avoid repeating file-level detail.
+- Follow the style example in `references/report-template.md`, but replace its generic labels with evidence from the PR.
+
 ### System flow: before and after
 
-- Add this section after `Overall summary` when the PR changes architecture, data flow, system boundaries, or a workflow that spans several components. Omit it for small, local changes.
+- Add `## System flow: before and after` after the architecture section, if present, when a base-versus-head comparison makes the architectural or workflow change clearer. It may appear without the bird's-eye diagram when a local change still benefits from a compact behavior comparison.
 - Show the base-branch behavior as `Before` and the PR-head behavior as `After` in one compact plain-text diagram. Describe the code that exists, not a future design.
 - Use plain labels. Define any necessary project-specific terms earlier in `Overall summary` before using them in the diagram.
 - Follow the diagram with short `Added`, `Changed`, and `Unchanged` bullets when they help the reviewer see the scope and important non-goals.
+- If both diagrams appear, use the before/after view only for the meaningful delta instead of repeating the full architecture.
 - Keep the section scannable in under 60 seconds. Do not repeat the detailed explanations from `Change groups`.
 
 For snippets:

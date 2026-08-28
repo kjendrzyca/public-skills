@@ -20,9 +20,44 @@ Use this template for every report. Adapt wording to the PR, but keep the same s
 
 [One or two short paragraphs explaining what the PR does and the main areas changed. Define the core entities and any project-specific terms before using them to explain the flow. Stay neutral and explanatory. Do not lead with review judgments.]
 
+## Bird's-eye architecture
+
+[Required when the PR-head runtime flow crosses several components or system boundaries. Replace every generic label below with names supported by the diff. Keep the same simple, top-down tree shape. Remove this whole section for a small, local change with no useful architecture flow.]
+
+```text
+API caller (UI is outside this PR)
+  |
+  +-- feature.getStatus
+  |     |
+  |     v
+  |   Router
+  |     -> ReadService
+  |        -> authorize
+  |        -> Repository
+  |        -> Database
+  |     <- { status }
+  |
+  +-- feature.startRun
+        |
+        v
+      CreateRunService
+        -> persist work
+        -> schedule background task
+                 |
+                 v
+           ExecuteRunTask
+                 |
+                 v
+           ExecuteRunService
+             +-- read shared state
+             +-- claim work
+             +-- call provider
+             +-- settle result
+```
+
 ## System flow: before and after
 
-[Include this section only when the PR changes architecture, data flow, system boundaries, or a workflow that spans several components. Remove it for small, local changes. Use plain labels, and define any necessary project-specific terms in `Overall summary` before they appear here.]
+[Include this section only when comparing the base branch with the PR head makes the architecture or workflow change clearer. It can appear with or without `Bird's-eye architecture`. When both appear, show only the meaningful delta here instead of repeating the full PR-head flow. Use plain labels, and define any necessary project-specific terms in `Overall summary` before they appear here.]
 
 ```text
 Before
@@ -136,8 +171,12 @@ Why grouped: [short phrase]
 ## Formatting Rules
 
 - Keep `<details>` blocks closed by default. Do not add the `open` attribute.
-- Include `System flow: before and after` only for PRs that change architecture, data flow, system boundaries, or a multi-component workflow. Omit it for small, local changes.
+- Include `Bird's-eye architecture` whenever the PR-head runtime flow crosses several components or system boundaries. Omit it for a small, local change with no useful system flow.
+- Use one simple, top-down ASCII tree. Start at the real caller or entry point, branch related flows under one root, show only major handoffs and decisions, and label any boundary outside the PR.
+- Use real identifiers from the diff in the architecture diagram. Do not copy the generic example labels into a report unless they are accurate.
+- Include `System flow: before and after` only when a base-versus-head comparison adds useful information.
 - Keep the before/after diagram accurate to the base branch and PR head, scannable in under 60 seconds, and free of terms that were not defined earlier.
+- When both diagrams appear, keep the before/after view focused on the delta so it does not repeat the full bird's-eye architecture.
 - Use numbered group headings in review order, not alphabetical file order.
 - Keep group titles concrete: name the behavior or code area, not just the filename.
 - Keep `Why grouped` to one short phrase.
