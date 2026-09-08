@@ -98,13 +98,21 @@ Use Markdown links to the PR Files view for primary references, with link text s
 ### System flow: before and after
 
 - Add `## System flow: before and after` after the architecture section, if present, when a base-versus-head comparison makes the architectural or workflow change clearer. It may appear without the bird's-eye diagram when a local change still benefits from a compact behavior comparison.
-- Show the base-branch behavior as `Before` and the PR-head behavior as `After` in one compact plain-text diagram. Describe the code that exists, not a future design.
+- For a small change to an existing flow, prefer one `diff` block showing the removed (`-`) and added (`+`) steps with enough unchanged context to preserve ownership and order. Use separate `Before` and `After` plain-text views when most of the flow changes or a diff would obscure the sequence. Compare the base branch with the PR head, not a future design.
 - Use plain labels. Define any necessary project-specific terms earlier in `Overall summary` before using them in the diagram.
 - Follow the diagram with short `Added`, `Changed`, and `Unchanged` bullets when they help the reviewer see the scope and important non-goals.
 - If both diagrams appear, use the before/after view only for the meaningful delta instead of repeating the full architecture.
 - Keep the section scannable in under 60 seconds. Do not repeat the detailed explanations from `Change groups`.
 
-For snippets:
+### Focused sketches
+
+- Within each change group, choose the smallest view that clarifies the change: pseudocode for logic or state transitions, a call tree for runtime order, a component tree with relevant hooks and state ownership for UI structure, or a shallow file tree for file responsibilities.
+- Place a sketch next to the short explanation it supports. Include only the calls, files, state, and boundaries needed for that point. Omit it when prose or a code snippet already makes the change clear; do not repeat the overall architecture.
+- Use `diff` for a small change to an existing sketch. Show the whole relevant block when most of it is new or omitted context would hide ownership or order.
+- Label synthesized views as `Schematic` or `Pseudocode`, including those in `System flow: before and after`, and place GitHub PR diff links to the supporting files beside them. A schematic diff describes the change; it is not a literal source patch. Use real identifiers where applicable and preserve the behavior shown by the base and PR head.
+- Sketches can replace noisy raw code, but must preserve the important behavior and evidence for every meaningful file in the group. Keep the report self-contained in Markdown with text or code fences.
+
+### Important snippets
 
 - Use `Important snippets` as an evidence walkthrough, not as a single representative code block.
 - Interleave short explanations with snippets when that makes the group easier to understand.

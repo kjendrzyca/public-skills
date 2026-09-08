@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-08
+
+### Add focused sketches to coding-explain-diff
+
+- Change groups can use pseudocode, call trees, component trees, or shallow file trees to explain the relevant logic, runtime order, UI state ownership, or file responsibilities.
+- Small flow changes prefer a schematic diff; larger changes keep separate Before/After views when they make the sequence clearer.
+- Synthesized views carry a Schematic or Pseudocode label and links to the supporting PR changes. Sketches preserve evidence for meaningful files and omit details already clear from prose, snippets, or the overall architecture.
+
 ## 2026-08-28
 
 ### Add bird's-eye architecture diagrams to coding-explain-diff

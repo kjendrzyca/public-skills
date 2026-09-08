@@ -59,6 +59,22 @@ API caller (UI is outside this PR)
 
 [Include this section only when comparing the base branch with the PR head makes the architecture or workflow change clearer. It can appear with or without `Bird's-eye architecture`. When both appear, show only the meaningful delta here instead of repeating the full PR-head flow. Use plain labels, and define any necessary project-specific terms in `Overall summary` before they appear here.]
 
+[Choose one comparison format. Prefer a schematic diff for a small change to an existing flow; use separate Before/After views when most of the flow changes or a diff would obscure order. Label the view and link to its supporting changes.]
+
+Schematic diff (base -> PR head). Sources: [supporting file]([GitHub PR diff link]).
+
+```diff
+ submitForm
+   createSession
+     persistPrompt
++    expandSkillMention
+     launchAgent
+```
+
+[Alternatively:]
+
+Schematic (base -> PR head). Sources: [supporting file]([GitHub PR diff link]).
+
 ```text
 Before
   [current flow on the base branch]
@@ -85,6 +101,8 @@ Why grouped: [short phrase explaining why these edits belong together]
 #### Explanation
 
 [Explain the change as a reviewer would want to understand it. Cover what changed, where it fits in the flow, and why it matters.]
+
+[When it clarifies this group, place a focused sketch next to the explanation: pseudocode for logic or state, a call tree for runtime order, a component tree for UI structure and state ownership, or a shallow file tree for responsibilities. Follow `Focused sketches` in SKILL.md. Use a diff for a small delta or the whole relevant block when context matters. Label synthesized views as Schematic or Pseudocode and link to the supporting PR changes. Omit this view if prose or snippets already explain the point.]
 
 #### Important snippets
 
@@ -176,11 +194,13 @@ Why grouped: [short phrase]
 - Use real identifiers from the diff in the architecture diagram. Do not copy the generic example labels into a report unless they are accurate.
 - Include `System flow: before and after` only when a base-versus-head comparison adds useful information.
 - Keep the before/after diagram accurate to the base branch and PR head, scannable in under 60 seconds, and free of terms that were not defined earlier.
+- Choose a schematic diff or separate Before/After views using the guidance above; do not include both for the same change.
 - When both diagrams appear, keep the before/after view focused on the delta so it does not repeat the full bird's-eye architecture.
 - Use numbered group headings in review order, not alphabetical file order.
 - Keep group titles concrete: name the behavior or code area, not just the filename.
 - Keep `Why grouped` to one short phrase.
 - Use `Important snippets` as an interleaved evidence walkthrough. A group may have multiple snippets.
+- Apply `Focused sketches` from SKILL.md within any group when useful. Label synthesized views, keep supporting PR diff links nearby, and preserve evidence for every meaningful file even when a sketch replaces raw code.
 - Bias strongly toward representing every meaningful file in the group with either a snippet or a short explanation.
 - Snippets should be long enough to do their explanatory job, not necessarily the shortest possible fragment.
 - Never paste an arbitrary prefix of a function, query, type, or block. Snippets must be semantically complete or explicitly elided with language-appropriate comments.
