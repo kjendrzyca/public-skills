@@ -2,6 +2,12 @@
 
 ## 2026-09-08
 
+### Move coding-explain-diff to repo-harness
+
+- Move `coding-explain-diff` to [repo-harness](https://github.com/kjendrzyca/repo-harness) as `harness-explain-diff`.
+- Install it with `npx skills add github.com/kjendrzyca/repo-harness --skill harness-explain-diff` and invoke `harness-explain-diff` by name.
+- New reports use `.agent-data/harness-explain-diff/`. Existing reports stay in their original locations.
+
 ### Add focused sketches to coding-explain-diff
 
 - Change groups can use pseudocode, call trees, component trees, or shallow file trees to explain the relevant logic, runtime order, UI state ownership, or file responsibilities.

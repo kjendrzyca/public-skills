@@ -48,9 +48,13 @@ Compact the current conversation into a redacted handoff document for another ag
 
 The handoff is saved to the operating system's temporary directory, not the current workspace, and points to existing artifacts instead of duplicating them.
 
-### [`coding-explain-diff`](./skills/coding-explain-diff)
+### `coding-explain-diff` (moved)
 
-Explain GitHub pull requests from a PR URL as grouped Markdown diff reports with per-group explanations, important snippets, and PR Files links.
+This skill now lives in [repo-harness](https://github.com/kjendrzyca/repo-harness) as `harness-explain-diff`.
+
+```bash
+npx skills add github.com/kjendrzyca/repo-harness --skill harness-explain-diff
+```
 
 Demo: [watch a short coding-explain-diff demo](./assets/coding-explain-diff-demo.mp4).
 
