@@ -57,16 +57,6 @@ Forked from HumanLayer's [`show-me`](https://github.com/humanlayer/skills/tree/m
 - Flow diagrams default to ASCII art in a `text` block; Mermaid is used only when the output renders it (a Markdown file or an HTML artifact), never in chat or terminal output.
 - An ASCII sequence-diagram example was added next to the Mermaid one.
 
-### `coding-explain-diff` (moved)
-
-This skill now lives in [repo-harness](https://github.com/kjendrzyca/repo-harness) as `harness-explain-diff`.
-
-```bash
-npx skills add github.com/kjendrzyca/repo-harness --skill harness-explain-diff
-```
-
-Demo: [watch a short coding-explain-diff demo](./assets/coding-explain-diff-demo.mp4).
-
 ### [`coding-explain-problem`](./skills/coding-explain-problem)
 
 Explain software and code-related problems in simple terms, including bugs, feature requests, refactors, errors, PR intent, or the problem an existing piece of code solves.
