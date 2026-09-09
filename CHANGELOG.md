@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-09
+
+### Add show-me
+
+- Add `show-me`, forked from HumanLayer's [`show-me`](https://github.com/humanlayer/skills/tree/main/plugins/show-me) (MIT). See [README](./README.md#show-me) for the changes from the original.
+
 ## 2026-09-08
 
 ### Move coding-explain-diff to repo-harness

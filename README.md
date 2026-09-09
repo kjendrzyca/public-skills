@@ -48,6 +48,15 @@ Compact the current conversation into a redacted handoff document for another ag
 
 The handoff is saved to the operating system's temporary directory, not the current workspace, and points to existing artifacts instead of duplicating them.
 
+### [`show-me`](./skills/show-me)
+
+Explain the current topic visually with concise diagrams, code-shape sketches, diffs, and focused HTML artifacts.
+
+Forked from HumanLayer's [`show-me`](https://github.com/humanlayer/skills/tree/main/plugins/show-me) (MIT). Changes from the original:
+
+- Flow diagrams default to ASCII art in a `text` block; Mermaid is used only when the output renders it (a Markdown file or an HTML artifact), never in chat or terminal output.
+- An ASCII sequence-diagram example was added next to the Mermaid one.
+
 ### `coding-explain-diff` (moved)
 
 This skill now lives in [repo-harness](https://github.com/kjendrzyca/repo-harness) as `harness-explain-diff`.
