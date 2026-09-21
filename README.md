@@ -73,6 +73,12 @@ This skill is intentionally tiny: it is a prompt for breaking out of default sol
 
 Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes.
 
+### [`tally`](./skills/tally)
+
+Create and edit Tally forms and fetch responses through MCPorter CLI. Discover
+tool schemas on demand, retain the working session across commands, and save
+forms with an explicit draft or published status.
+
 ## Contributing
 
 See [AGENTS.md](./AGENTS.md) for authoring rules.

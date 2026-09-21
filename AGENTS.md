@@ -31,7 +31,16 @@ Audit every new or modified skill for leaks before commit. If unsure, do not com
 ## Conventions
 
 - one skill per folder, kebab-case name
+- keep `description` as short as possible while letting the agent select the
+  right skill: purpose and essential selection boundaries only; descriptions
+  consume context before loading, so put workflow steps, implementation details,
+  examples, and extended capability lists in the body or references
 - relative paths within a skill, never absolute
+- keep skill content independent of where it is installed: no workspace names,
+  checkout paths, local/global installation claims, or personal setup instructions
+  in `SKILL.md`, references, or bundled helpers; keep deployment details in the
+  consuming environment's setup docs and resolve bundled resources relative to
+  the skill itself
 - English for skill content unless the skill is explicitly about a non-English context
 - prefer minimal changes when updating an existing skill
 - do not create or regenerate `agents/` UI metadata folders, including `agents/openai.yaml`, unless explicitly requested by the maintainer

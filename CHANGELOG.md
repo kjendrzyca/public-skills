@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-21
+
+### Add tally
+
+- Create and edit Tally forms and read responses through the official MCP server with MCPorter.
+- Discover tool schemas on demand, keep the working form across CLI calls, and coordinate agents sharing a session.
+- Set draft or published status explicitly and verify saved content. Restore question titles ending in parentheses with `update_text` when `create_blocks` strips them.
+- Keep skill descriptions minimal and skill content independent of its installation location.
+
 ## 2026-09-09
 
 ### Add show-me

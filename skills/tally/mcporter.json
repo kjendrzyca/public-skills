@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tally": {
+      "description": "Tally forms and submissions",
+      "baseUrl": "https://api.tally.so/mcp",
+      "auth": "oauth",
+      "lifecycle": "keep-alive"
+    }
+  },
+  "imports": []
+}
