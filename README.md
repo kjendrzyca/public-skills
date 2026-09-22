@@ -73,6 +73,12 @@ This skill is intentionally tiny: it is a prompt for breaking out of default sol
 
 Analyze local video or audio files with ffmpeg/ffprobe, Parakeet MLX or Whisper transcription, contact sheets, and timestamped issue notes.
 
+### [`record-macos-window`](./skills/record-macos-window)
+
+Record a single macOS app or browser window without audio, then trim, crop, and scale it into a verified constant 60 fps video. Review the result with contact sheets and frame-by-frame motion strips.
+
+For example, ask the agent to use `record-macos-window` to record a settings change in one app window and export a cropped demo. Requires macOS 15+, Xcode Command Line Tools, ffmpeg, and Screen Recording permission.
+
 ### [`tally`](./skills/tally)
 
 Create and edit Tally forms and fetch responses through MCPorter CLI. Discover

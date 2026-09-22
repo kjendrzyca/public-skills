@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-22
+
+### Add record-macos-window
+
+- Record a single macOS app or browser window without audio, with the cursor shown or hidden.
+- Trim, crop, and scale recordings into constant 60 fps videos, with checks for frame timing and decoding errors.
+- Review recordings with contact sheets and frame-by-frame motion strips. Keep the original recording until you approve the export.
+
 ## 2026-09-21
 
 ### Add tally

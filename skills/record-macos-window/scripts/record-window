@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  echo "Error: record-window requires macOS 15 or newer." >&2
+  exit 2
+fi
+
+if ! command -v xcrun >/dev/null 2>&1; then
+  echo "Error: xcrun was not found. Install Xcode Command Line Tools with: xcode-select --install" >&2
+  exit 2
+fi
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source_path="${script_dir}/record-window.swift"
+
+if [[ ! -f "${source_path}" ]]; then
+  echo "Error: bundled Swift source is missing: ${source_path}" >&2
+  exit 2
+fi
+
+build_dir="$(mktemp -d "${TMPDIR:-/tmp}/record-macos-window.XXXXXX")"
+chmod 700 "${build_dir}"
+
+cleanup() {
+  status=$?
+  trap - EXIT
+  rm -rf -- "${build_dir}"
+  exit "${status}"
+}
+trap cleanup EXIT
+
+binary_path="${build_dir}/record-window"
+echo "[info] Compiling the ScreenCaptureKit recorder..." >&2
+if ! xcrun swiftc -O -parse-as-library "${source_path}" -o "${binary_path}"; then
+  echo "Error: Swift compilation failed. Confirm that macOS 15 SDK support is installed." >&2
+  exit 3
+fi
+
+set +e
+"${binary_path}" "$@"
+status=$?
+set -e
+exit "${status}"
