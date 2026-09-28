@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-28
+
+### Add one-by-one
+
+- Ask a longer list of questions one at a time, each with context, options, and a recommended option.
+- Drop or add later questions based on each answer, show roughly how many remain, and summarize the decisions at the end.
+
 ## 2026-09-22
 
 ### Add record-macos-window

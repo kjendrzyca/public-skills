@@ -48,6 +48,12 @@ Compact the current conversation into a redacted handoff document for another ag
 
 The handoff is saved to the operating system's temporary directory, not the current workspace, and points to existing artifacts instead of duplicating them.
 
+### [`one-by-one`](./skills/one-by-one)
+
+Ask a longer list of questions one at a time instead of all at once. Each question comes with the context needed to answer it, the options, and a recommended option. Each answer can drop or add later questions, and the skill ends with a summary of the decisions.
+
+Uses the client's built-in question tool when it has one, otherwise plain chat.
+
 ### [`show-me`](./skills/show-me)
 
 Explain the current topic visually with concise diagrams, code-shape sketches, diffs, and focused HTML artifacts.
