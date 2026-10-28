@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url'
 const crypto = webcrypto
 
 const TOKEN_PREFIX = 'ntd_'
-const TASKS_PER_DAY_LIMIT = 5
+const TASKS_PER_DAY_LIMIT = 8
+const TASKS_PER_DAY_TARGET = 5
 const SHORT_ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 
 const padDatePart = (value) => String(value).padStart(2, '0')
@@ -123,7 +124,7 @@ export const validateTaskLimit = (tasks, dateValue, excludeTaskId) => {
 
   if (tasksCount >= TASKS_PER_DAY_LIMIT) {
     throw new Error(
-      `You can only have ${TASKS_PER_DAY_LIMIT} tasks per day. This day already has ${tasksCount} tasks.`,
+      `You can have at most ${TASKS_PER_DAY_LIMIT} tasks per day (aim for ${TASKS_PER_DAY_TARGET}). This day already has ${tasksCount} tasks.`,
     )
   }
 }
