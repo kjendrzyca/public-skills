@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 const crypto = webcrypto
 
 const TOKEN_PREFIX = 'ntd_'
-const TASKS_PER_DAY_LIMIT = 8
+const TASKS_PER_DAY_LIMIT = 10
 const TASKS_PER_DAY_TARGET = 5
 const SHORT_ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 

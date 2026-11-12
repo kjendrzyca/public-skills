@@ -81,7 +81,7 @@ The `date` field accepts both short (`"2026-03-20"`) and full (`"2026-03-20T00:0
 
 ## Limits
 
-- Aim for **5 tasks per day**, maximum **8** (burnout prevention)
+- Aim for **5 tasks per day**, maximum **10** (burnout prevention)
 
 ## Environment
 
